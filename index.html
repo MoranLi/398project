@@ -6,19 +6,35 @@
 		<script type="text/javascript" src="d3.js"></script>
 		<style type="text/css">
 			/* No style rules here yet */	
+      body{
+        width: 2400px;
+        height: 1200px;
+      }
+      .top{
+        height: 600px;
+      }
+      .bottom{
+        direction: ltr;
+        height: 600px;
+      }
       .bottom_left{
-        margin-top: 600px;
+        width: 1600px;
+        height: 600px;
+        float: left;
       }
       .bottom_right{
-        margin-top: 600px;
-        margin-left: 1600px;
+        width: 800px;
+        height: 600px;
+        float: left;
       }	
 		</style>
 	</head>
 	<body>
     <div class="top"></div>
-    <div class="bottom_left"></div>
-    <div class="bottom_right"></div>
+    <div class="bottom">
+        <div class="bottom_left"></div>
+        <div class="bottom_right"></div>
+    </div>
 	  <script>
       var w1 = 2400;
       var h1 = 600;
@@ -60,10 +76,11 @@
           }
         });
         countries.sort();
+        /*
         console.log(countries);
         console.log(years);
         console.log(fields);
-        
+        */
       }
 
       function CreateSvg(){
@@ -131,7 +148,7 @@
             color.push([color1,color2,color3])
             return "rgb"+"("+color1+","+color2+","+color2+")"
             });
-        console.log(color)
+        //console.log(color)
         bottom_right_svg.selectAll("text")
 						.data(countries)
 						.enter()
