@@ -3,7 +3,10 @@
 	<head>
 		<meta charset="utf-8">
 		<title>A1Q3</title>
-		<script type="text/javascript" src="d3.js"></script>
+    <script type="text/javascript" src="d3.v3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="d3.parcoords.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="d3.parcoords.js"></script>
 		<style type="text/css">
 			/* No style rules here yet */	
       body{
@@ -30,7 +33,7 @@
 		</style>
 	</head>
 	<body>
-    <div class="top"></div>
+    <div class="top parcoords"></div>
     <div class="bottom">
         <div class="bottom_left"></div>
         <div class="bottom_right"></div>
@@ -62,6 +65,7 @@
         InitArray();
         CreateSvg();
         CreateCountrySet();
+        CreateParallerCoordinate();
       }
 
       function InitArray(){
@@ -77,11 +81,13 @@
           }
           CreateCountryMedal(element);
         });
-        countries.sort();
-        console.log(country_medal)
+        //countries.sort();
+        //console.log(country_medal)
+        //console.log(countries);
+        //console.log(years);
         /*
         console.log(countries);
-        console.log(years);
+        
         console.log(fields);
         */
       }
@@ -210,9 +216,31 @@
       }
 
       function CreateParallerCoordinate(){
-        country_medal.forEach(function (element){
-          
+        var dataset = [];
+        var i = 0;
+        Object.keys(country_medal).forEach(function (element){
+          dataset.push([]);
+          //console.log(element)
+          //console.log(country_medal[element])
+          years.forEach(function (year){
+            if(country_medal[element][year] != undefined){
+              dataset[i].push(country_medal[element][year].length);
+            }
+            else{
+              dataset[i].push(0);
+            }
+          })
+          i++;
         })
+        //console.log(dataset)
+        var pc = d3.parcoords()(".top")
+                .data(dataset)
+                .render()
+                .createAxes()
+                .color(function(d,i){
+                  console.log(i);
+                  return "rgb"+"("+color[i][0]+","+color[i][1]+","+color[i][2]+")"
+                })
       }
 
       
