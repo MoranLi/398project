@@ -47,6 +47,7 @@
       var years = [];
       var fields = [];
       var color = [];
+      var country_medal = {};
       var svg;
       var bottom_left_svg;
       var bottom_right_svg;
@@ -74,8 +75,10 @@
           if(!fields.includes(element.Sport)){
             fields.push(element.Sport);
           }
+          CreateCountryMedal(element);
         });
         countries.sort();
+        console.log(country_medal)
         /*
         console.log(countries);
         console.log(years);
@@ -189,7 +192,28 @@
 						.attr("font-size","10px");
       }
 
-      
+      function CreateCountryMedal(element){
+        if(country_medal[element.NOC] != undefined){
+          if(country_medal[element.NOC][element.Edition] != undefined){
+            country_medal[element.NOC][element.Edition].push([element.Sport, element.Medal]);
+          }
+          else{
+            country_medal[element.NOC][element.Edition] = [];
+            country_medal[element.NOC][element.Edition].push([element.Sport, element.Medal]);
+          }
+        }
+        else{
+          country_medal[element.NOC] = {};
+          country_medal[element.NOC][element.Edition] = [];
+          country_medal[element.NOC][element.Edition].push([element.Sport, element.Medal]);
+        }
+      }
+
+      function CreateParallerCoordinate(){
+        country_medal.forEach(function (element){
+          
+        })
+      }
 
       
 
