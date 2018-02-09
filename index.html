@@ -5,17 +5,35 @@
 		<title>A1Q3</title>
 		<script type="text/javascript" src="d3.js"></script>
 		<style type="text/css">
-			/* No style rules here yet */		
+			/* No style rules here yet */	
+      .bottom_left{
+        margin-top: 600px;
+      }
+      .bottom_right{
+        margin-top: 600px;
+        margin-left: 1600px;
+      }	
 		</style>
 	</head>
 	<body>
+    <div class="top"></div>
+    <div class="bottom_left"></div>
+    <div class="bottom_right"></div>
 	  <script>
-      var w = 2400;
-      var h = 2400;
+      var w1 = 2400;
+      var h1 = 600;
+      var w2 = 1600;
+      var h2 = 600;
+      var w3 = 800;
+      var h3 = 600;
       var olympic;
       var countries = [];
       var years = [];
       var fields = [];
+      var color = [];
+      var svg;
+      var bottom_left_svg;
+      var bottom_right_svg;
 
       //Read the data
 			d3.csv("Summer Olympic medallists 1896 to 2008 - ALL MEDALISTS.csv", function(data) {				
@@ -25,6 +43,8 @@
 
       function InitVisual(){
         InitArray();
+        CreateSvg();
+        CreateCountrySet();
       }
 
       function InitArray(){
@@ -39,9 +59,117 @@
             fields.push(element.Sport);
           }
         });
+        countries.sort();
         console.log(countries);
         console.log(years);
         console.log(fields);
+        
+      }
+
+      function CreateSvg(){
+        //Create SVG element
+        svg = d3.select("body")     
+            .append("svg")          
+            .attr("width", w1)       
+            .attr("height", h1);
+        bottom_left_svg = d3.select(".bottom_left")
+                        .append("svg")          
+                        .attr("width", w2)       
+                        .attr("height", h2);
+        bottom_right_svg = d3.select(".bottom_right")
+                        .append("svg")          
+                        .attr("width", w3)       
+                        .attr("height", h3);
+      }
+
+      function CreateCountrySet(){
+        bottom_right_svg.selectAll("rect")
+					.data(countries)
+					.enter()
+					.append("rect")				// create a rect
+					.attr("x",function(d,i){
+            if(i < 30){
+              return 0
+            }
+            else if (i < 60){
+              return 50
+            }
+            else if (i < 90){
+              return 100
+            }
+            else if(i< 120){
+              return 150
+            }
+            return 200
+          })
+					.attr("y",function(d,i){
+            if(i < 30){
+              return i*20
+            }
+            else if (i < 60){
+              return (i-30)*20
+            }
+            else if (i < 90){
+              return (i-60)*20
+            }
+            else if (i< 120){
+              return (i-90)*20
+            }
+            return (i-120)*20
+          })				// set vertical start point
+					.attr("width",10)
+					.attr("height",10)  //
+					.attr("fill",function(d,i){
+            var color1 = Math.floor(Math.random()*255);
+            var color2 = Math.floor(Math.random()*255);
+            var color3 = Math.floor(Math.random()*255);
+            while(color.includes([color1,color2,color3])){
+              color1 = Math.floor(Math.random()*255);
+              color2 = Math.floor(Math.random()*255);
+              color3 = Math.floor(Math.random()*255);
+            }
+            color.push([color1,color2,color3])
+            return "rgb"+"("+color1+","+color2+","+color2+")"
+            });
+        console.log(color)
+        bottom_right_svg.selectAll("text")
+						.data(countries)
+						.enter()
+						.append("text")
+						.attr("x",function(d,i){
+              if(i < 30){
+                return 15
+              }
+              else if (i < 60){
+                return 65
+              }
+              else if (i < 90){
+                return 115
+              }
+              else if (i<120){
+                return 165
+              }
+              return 215
+            })
+            .attr("y",function(d,i){
+              if(i < 30){
+                return i*20+10
+              }
+              else if (i < 60){
+                return (i-30)*20+10
+              }
+              else if (i < 90){
+                return (i-60)*20+10
+              }
+              else if (i < 120){
+                return (i-90)*20+10
+              }
+              return (i-120)*20+10
+            })
+						.text(function(d){
+							return d;
+						})
+						.attr("font-size","10px");
       }
 
       
