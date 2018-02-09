@@ -10,6 +10,43 @@
 	</head>
 	<body>
 	  <script>
+      var w = 2400;
+      var h = 2400;
+      var olympic;
+      var countries = [];
+      var years = [];
+      var fields = [];
+
+      //Read the data
+			d3.csv("Summer Olympic medallists 1896 to 2008 - ALL MEDALISTS.csv", function(data) {				
+				olympic = data; 	
+        InitVisual();		
+			});
+
+      function InitVisual(){
+        InitArray();
+      }
+
+      function InitArray(){
+        olympic.forEach(function(element){
+          if(!countries.includes(element.NOC)){
+            countries.push(element.NOC);
+          }
+          if(!years.includes(element.Edition)){
+            years.push(element.Edition);
+          }
+          if(!fields.includes(element.Sport)){
+            fields.push(element.Sport);
+          }
+        });
+        console.log(countries);
+        console.log(years);
+        console.log(fields);
+      }
+
+      
+
+      
 
     </script>
 	</body>
