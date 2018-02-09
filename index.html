@@ -11,18 +11,18 @@
 			/* No style rules here yet */	
       body{
         width: 2400px;
-        height: 1200px;
+        height: 2400px;
       }
       .top{
-        height: 600px;
+        height: 1600px;
       }
       .bottom{
         direction: ltr;
-        height: 600px;
+        height: 800px;
       }
       .bottom_left{
         width: 1600px;
-        height: 600px;
+        height: 800px;
         float: left;
       }
       .bottom_right{
@@ -40,11 +40,11 @@
     </div>
 	  <script>
       var w1 = 2400;
-      var h1 = 600;
+      var h1 = 800;
       var w2 = 1600;
-      var h2 = 600;
+      var h2 = 400;
       var w3 = 800;
-      var h3 = 600;
+      var h3 = 400;
       var olympic;
       var countries = [];
       var years = [];
@@ -218,29 +218,29 @@
       function CreateParallerCoordinate(){
         var dataset = [];
         var i = 0;
+        var j = 0;
         Object.keys(country_medal).forEach(function (element){
-          dataset.push([]);
+          dataset.push({});
           //console.log(element)
           //console.log(country_medal[element])
           years.forEach(function (year){
             if(country_medal[element][year] != undefined){
-              dataset[i].push(country_medal[element][year].length);
+              //dataset[i].push(country_medal[element][year].length);
+              dataset[i][year] = country_medal[element][year].length;
             }
             else{
-              dataset[i].push(0);
+              dataset[i][year] = 0;
             }
           })
+          dataset[i]["name"] = element
           i++;
         })
-        //console.log(dataset)
+        console.log(dataset)
         var pc = d3.parcoords()(".top")
                 .data(dataset)
                 .render()
                 .createAxes()
-                .color(function(d,i){
-                  console.log(i);
-                  return "rgb"+"("+color[i][0]+","+color[i][1]+","+color[i][2]+")"
-                })
+                .color('red')
       }
 
       
