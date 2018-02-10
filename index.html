@@ -121,15 +121,19 @@
             .append("svg")          
             .attr("width", w1)       
             .attr("height", h1);
+        CreateBottomLeftMiddle();
+        bottom_right_svg = d3.select(".bottom_right")
+                        .append("svg")          
+                        .attr("width", w2)       
+                        .attr("height", h2);
+      }
+
+      function CreateBottomLeftMiddle(){
         bottom_left_svg = d3.select(".bottom_left_1")
                         .append("svg")          
                         .attr("width", w2)       
                         .attr("height", h2);
         bottom_middle_svg = d3.select(".bottom_left_2")
-                        .append("svg")          
-                        .attr("width", w2)       
-                        .attr("height", h2);
-        bottom_right_svg = d3.select(".bottom_right")
                         .append("svg")          
                         .attr("width", w2)       
                         .attr("height", h2);
@@ -194,6 +198,7 @@
                 document.getElementsByClassName("bottom_left_1")[0].innerHTML = "";
                 document.getElementsByClassName("bottom_left_2")[0].innerHTML = "";
                 GenerateDataset(country_medal[countries[i]][year]);
+                CreateBottomLeftMiddle();
                 CreateFieldPieChart();
               }
               else{
