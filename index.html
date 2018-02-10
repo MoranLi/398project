@@ -294,7 +294,7 @@
                   .data(pie1(FieldResult))  
                   .enter()  
                   .append("g")  
-                  .attr("transform","translate("+(w2/4)+","+(w2/4)+")");  
+                  .attr("transform","translate("+400+","+400+")");  
         arcs1.append("path")  
             .attr("fill",function(d,i){  
               var color1 = Math.floor(Math.random()*255);
@@ -309,8 +309,8 @@
             .attr("transform",function(d){  
               d.innerRadius = 0;
               d.outerRadius = w2/4;
-              var x = arc1.centroid(d)[0] * 2;
-              var y = arc1.centroid(d)[1] * 2;
+              var x = arc1.centroid(d)[0] * 2.8;
+              var y = arc1.centroid(d)[1] * 2.8;
               return 'translate(' + x + ', ' + y + ')';
             })  
             .attr("text-anchor","middle")  
@@ -324,7 +324,7 @@
                   .data(pie2(MedalResult))  
                   .enter()  
                   .append("g")  
-                  .attr("transform","translate("+(w2/4)+","+(w2/4)+")");  
+                  .attr("transform","translate("+400+","+400+")");  
         arcs2.append("path")  
             .attr("fill",function(d,i){  
               if(i == 0){
