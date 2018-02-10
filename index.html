@@ -20,8 +20,13 @@
         direction: ltr;
         height: 800px;
       }
-      .bottom_left{
-        width: 1600px;
+      .bottom_left_1{
+        width: 800px;
+        height: 800px;
+        float: left;
+      }
+      .bottom_left_2{
+        width: 800px;
         height: 800px;
         float: left;
       }
@@ -35,24 +40,38 @@
 	<body>
     <div class="top parcoords"></div>
     <div class="bottom">
-        <div class="bottom_left"></div>
+        <div class="bottom_left_1"></div>
+        <div class="bottom_left_2"></div>
         <div class="bottom_right"></div>
     </div>
 	  <script>
+      // width and height for parrllel coordiante element
       var w1 = 2400;
-      var h1 = 800;
-      var w2 = 1600;
-      var h2 = 400;
-      var w3 = 800;
-      var h3 = 400;
+      var h1 = 1200;
+      // width and height for pie chart and list of countries
+      var w2 = 800;
+      var h2 = 800;
+      // data from csv
       var olympic;
+      // array store country name, years and fields name
       var countries = [];
       var years = [];
       var fields = [];
+      // array store color represents different country, same order to countries
       var color = [];
+      // map store ordered data from csv
       var country_medal = {};
+      // array store medal info for medal kinds on a given year and country, default to USA 2008
+      var MedalResult = [0,0,0];
+      // array store medal info for fields on a given year and country, default to USA 2008
+      var FieldResult = [];
+      // svg element hold parrllel coordiante element
       var svg;
+      // svg element hold pie chart of field medal info
       var bottom_left_svg;
+      // svg element hold pie chart of medal kind info
+      var bottom_middle_svg;
+      // svg element hold list of country and their colors
       var bottom_right_svg;
 
       //Read the data
@@ -66,6 +85,7 @@
         CreateSvg();
         CreateCountrySet();
         CreateParallerCoordinate();
+        CreateFieldPieChart();
       }
 
       function InitArray(){
@@ -78,11 +98,12 @@
           }
           if(!fields.includes(element.Sport)){
             fields.push(element.Sport);
+            FieldResult.push(0);
           }
           CreateCountryMedal(element);
         });
         //countries.sort();
-        //console.log(country_medal)
+        console.log(country_medal)
         //console.log(countries);
         //console.log(years);
         /*
@@ -98,14 +119,18 @@
             .append("svg")          
             .attr("width", w1)       
             .attr("height", h1);
-        bottom_left_svg = d3.select(".bottom_left")
+        bottom_left_svg = d3.select(".bottom_left_1")
+                        .append("svg")          
+                        .attr("width", w2)       
+                        .attr("height", h2);
+        bottom_middle_svg = d3.select(".bottom_left_2")
                         .append("svg")          
                         .attr("width", w2)       
                         .attr("height", h2);
         bottom_right_svg = d3.select(".bottom_right")
                         .append("svg")          
-                        .attr("width", w3)       
-                        .attr("height", h3);
+                        .attr("width", w2)       
+                        .attr("height", h2);
       }
 
       function CreateCountrySet(){
@@ -217,30 +242,120 @@
 
       function CreateParallerCoordinate(){
         var dataset = [];
+        //var yearset = [];
         var i = 0;
         var j = 0;
         Object.keys(country_medal).forEach(function (element){
           dataset.push({});
+          //yearset.push([]);
           //console.log(element)
           //console.log(country_medal[element])
           years.forEach(function (year){
             if(country_medal[element][year] != undefined){
-              //dataset[i].push(country_medal[element][year].length);
+              //yearset[i].push(country_medal[element][year].length);
               dataset[i][year] = country_medal[element][year].length;
             }
             else{
+              //yearset[i].push(0);
               dataset[i][year] = 0;
             }
           })
           dataset[i]["name"] = element
           i++;
         })
-        console.log(dataset)
+        //console.log(dataset)
         var pc = d3.parcoords()(".top")
                 .data(dataset)
                 .render()
                 .createAxes()
                 .color('red')
+      }
+      function GenerateDataset(info){
+        info.forEach(function (data){
+          if(data[1] == "Bronze"){
+            MedalResult[2]++;
+          }
+          if(data[1] == "Gold"){
+            MedalResult[0]++;
+          } 
+          if(data[1] == "Silver"){
+            MedalResult[1]++;
+          }
+          var index = fields.indexOf(data[0]);
+          FieldResult[index]++;
+        })
+      }
+      function CreateFieldPieChart(){
+        GenerateDataset(country_medal["USA"][2008]);
+        var pie1 = d3.layout.pie();   
+        var arc1 = d3.svg.arc()  
+                .outerRadius(w2/4);  
+        var arcs1 = bottom_left_svg.selectAll("g")  
+                  .data(pie1(FieldResult))  
+                  .enter()  
+                  .append("g")  
+                  .attr("transform","translate("+(w2/4)+","+(w2/4)+")");  
+        arcs1.append("path")  
+            .attr("fill",function(d,i){  
+              var color1 = Math.floor(Math.random()*255);
+              var color2 = Math.floor(Math.random()*255);
+              var color3 = Math.floor(Math.random()*255);  
+              return "rgb"+"("+color1+","+color2+","+color2+")"
+            })  
+            .attr("d",function(d){  
+                return arc1(d);  
+            });
+        arcs1.append("text")  
+            .attr("transform",function(d){  
+              d.innerRadius = 0;
+              d.outerRadius = w2/4;
+              var x = arc1.centroid(d)[0] * 2;
+              var y = arc1.centroid(d)[1] * 2;
+              return 'translate(' + x + ', ' + y + ')';
+            })  
+            .attr("text-anchor","middle")  
+            .text(function(d,i){  
+                return fields[i];  
+            }); 
+        var pie2 = d3.layout.pie();   
+        var arc2 = d3.svg.arc()  
+                .outerRadius(w2/4);  
+        var arcs2 = bottom_middle_svg.selectAll("g")  
+                  .data(pie2(MedalResult))  
+                  .enter()  
+                  .append("g")  
+                  .attr("transform","translate("+(w2/4)+","+(w2/4)+")");  
+        arcs2.append("path")  
+            .attr("fill",function(d,i){  
+              if(i == 0){
+                return "Gold"
+              } 
+              else if (i == 1){
+                return "LightGray"
+              } 
+              return "IndianRed"
+            })  
+            .attr("d",function(d){  
+                return arc2(d);  
+            });
+        arcs2.append("text")  
+            .attr("transform",function(d){  
+              d.innerRadius = 0;
+              d.outerRadius = w2/4;
+              var x = arc2.centroid(d)[0];
+              var y = arc2.centroid(d)[1];
+              return 'translate(' + x + ', ' + y + ')';
+            })  
+            .attr("text-anchor","middle")  
+            .text(function(d,i){  
+                if(i == 0){
+                  return "Gold"
+                } 
+                else if (i == 1){
+                  return "Silver"
+                } 
+                return "Bronze"
+            }); 
       }
 
       
